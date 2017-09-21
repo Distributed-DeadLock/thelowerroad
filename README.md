@@ -1,18 +1,27 @@
 # thelowerroad
 
-The lower Road (a Minetest Mod)
+The Lower Road (a Minetest Mod)
 ====================
 
 Adds a long road from -Z to +Z to the world, during world-generation.
+
 The road partially follows the terrain and tunnels through higher ground otherwise.
+
 The road materials depend on the environment. 
+
 Small amounts of loot can be found in little buildings beside the road.
+
 Per default the road will be generated at around x = 100.
 
+
 Version: 1.0
+
 License: The MIT License (MIT)
+
 Dependencies: default, stairs, farming (found in minetest_game)
+
 Download from: https://github.com/Distributed-DeadLock/thelowerroad
+
 
 Installation
 ------------
