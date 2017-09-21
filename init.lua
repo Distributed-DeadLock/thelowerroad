@@ -67,12 +67,11 @@ local ab2 = { name = "air", prob = 0 }
 local chunksizeinnodes = minetest.setting_get("chunksize") * 16
 -- set the base-level of the road (y-wise)
 -- road will not go below this AND be only generated in the chunk containing this y-position
--- best be left at water_level + 1
+-- best be left at water_level
 local road_base_elevation = minetest.setting_get("water_level") + 0
--- local road_base_elevation = 9 ; fot testing : remove
--- the maximum width of the road
+-- the width of the road
 local road_width = 5
--- the manimum height of the road
+-- the height of the road
 local road_height = 6
 -- limit sinspread to the max possible value
 if (sinspread > (math.floor(chunksizeinnodes / 2) - road_width - 1 )) then
