@@ -1,5 +1,7 @@
 Adds a long road from -Z to +Z to the world, during world-generation.
 
+Not compatible with mapgen v6!!
+
 The road partially follows the terrain and tunnels through higher ground otherwise.
 The road materials depend on the environment. 
 Small amounts of loot can be found in little buildings beside the road.
