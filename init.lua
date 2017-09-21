@@ -1,6 +1,6 @@
--- theroad -- by D.Lock
+-- thelowerroad -- by D.Lock
 -- a minetest mod that adds a long road from -Z to +Z to the world, during world-generation.
--- dependencies : default
+-- dependencies : default stairs farming
 -- ----------------------------------------------------------------------------
 -- Config Section ---
 
