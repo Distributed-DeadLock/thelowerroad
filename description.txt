@@ -1,6 +1,6 @@
 Adds a long road from -Z to +Z to the world, during world-generation.
 
-Not compatible with mapgen v6!!
+Not compatible with mapgen v6 & singlenode!!
 
 The road partially follows the terrain and tunnels through higher ground otherwise.
 The road materials depend on the environment. 
