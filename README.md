@@ -22,7 +22,7 @@ Dependencies: default, stairs, farming (found in minetest_game)
 
 Download from: https://github.com/Distributed-DeadLock/thelowerroad
 
-Not compatible with Mapgen v6!!
+Not compatible with Mapgen v6 & singlenode!!
 
 Installation
 ------------
