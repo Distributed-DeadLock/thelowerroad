@@ -26,8 +26,11 @@ Download from: https://github.com/Distributed-DeadLock/thelowerroad
 Compatibility with Mapgens:
 generally works with all mapgens which provide a heightmap via minetest.get_mapgen_object
 works better when a heatmap is provided as well.
+
 Fully compatible with : v5, v7, flat, fractal, valleys, lualandmg
+
 Compatible with slightly different behaviour with: v6
+
 Not compatible with singlenode unless you provide at least a heightmap in the corresponding lua-mapgenerator, 
 see https://github.com/SmallJoker/lualandmg/blob/b72ef91/init.lua#L97-L109 for an example on how to provide heightmap and heatmap properly.
 
