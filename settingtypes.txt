@@ -1,0 +1,20 @@
+# the position on the x axis, the road is placed at (in nodes)
+# this actually just selects the chunks the road is placed in,
+# actual placement is near the center (x-wise) of the selected chunk
+thelowerroad.axisx (X Position of the road) int 100
+
+# defining the road wobble
+# the factor x-pos is divided by, before taking the sinus
+# values larger than the chunksize will stretch out the wobble
+# values smaller than chunksize produce varying results depending on the resonance with chunksize 
+thelowerroad.sinfactor (The road wobble) int 62 40 10000
+
+# the result of sin(x-pos / sinfactor) is multiplied by this
+# the bigger the value, the bigger the wobble
+# values bigger than (chunksize/2)-roadwith will break the mod. 20 is a safe value
+thelowerroad.sinspread (The spread of the road wobble) int 30 2 40
+
+# affects the rareness of house generation
+# setting this to 0 will create houses one the ground
+# larger values create houses only if the road is underground
+thelowerroad.house_rareness (Roadside-house rareness) int 5 0 11

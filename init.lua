@@ -7,16 +7,24 @@
 -- the position on the x axis, the road is placed at (in nodes)
 -- this actually just selects the chunks the road is placed in,
 --  actual placement is near the center (x-wise) of the selected chunk
-local axisx = 100
+-- default: 100
+local axisx = tonumber(minetest.setting_get("thelowerroad.axisx")) or 100
 --- defining the road wobble
 -- the factor x-pos is divided by, before taking the sinus
 -- values larger than the chunksize will stretch out the wobble
 --  values smaller than chunksize produce varying results depending on the resonance with chunksize 
-local sinfactor = 62
+-- default: 62
+local sinfactor = tonumber(minetest.setting_get("thelowerroad.sinfactor")) or 62
 -- the result of sin(x-pos / sinfactor) is multiplied by this
 -- the bigger the value, the bigger the wobble
 --  values bigger than (chunksize/2)-roadwith will break the mod. 20 is a safe value
-local sinspread = 30
+-- default: 30
+local sinspread = tonumber(minetest.setting_get("thelowerroad.sinspread")) or 30
+-- affects the rareness of house generation
+-- setting this to 0 will create houses one the ground
+-- larger values create houses only if the road is underground 
+-- default: 5
+local house_rareness = tonumber(minetest.setting_get("thelowerroad.house_rareness")) or 5
 
 -- the material the road is build of
 --- main material
@@ -77,7 +85,14 @@ local road_height = 6
 if (sinspread > (math.floor(chunksizeinnodes / 2) - road_width - 1 )) then
 	sinspread = (math.floor(chunksizeinnodes / 2) - road_width - 1 )
 	end
-	
+-- the allowed difference between heightlevel and roadlevel for houses to appear
+local house_bbh = (1 - house_rareness)
+-- limit house_bbh to "sane" values
+if (house_bbh > 1) then
+	house_bbh = 1
+elseif (house_bbh < -10) then
+	house_bbh = -10
+end
 -- air schematic for clearing stuff	
 local air_schem = {
 	yslice_prob = {		
@@ -573,7 +588,11 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local hmap = minetest.get_mapgen_object("heightmap")
 	-- get the heatmap object for the chunk
 	local heatmap = minetest.get_mapgen_object("heatmap")
-
+	-- if no heatmap is provided use the heightmap as heatmap ;-)
+	if (heatmap == nil) then
+		heatmap = minetest.get_mapgen_object("heightmap")
+	end
+	
 	-- reseed the random function
 	math.randomseed(seed)
 	-- init some vars for position calculation
@@ -806,7 +825,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		end
 		
 		-- place roadside house
-		if ( (slices_left == 3) and ((y - hmap[hm_i]) < -4) and 
+		if ( (slices_left == 3) and ((y - hmap[hm_i]) < house_bbh) and 
 		  (prev_x <= x) and ( isstairs == 0) and
 		  (hmap[((x - minp.x + 5) + (((z - minp.z)) * chunksizeinnodes))] - y) > -1)then
 			hashouse = 1

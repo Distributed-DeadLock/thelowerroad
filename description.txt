@@ -1,8 +1,16 @@
 Adds a long road from -Z to +Z to the world, during world-generation.
 
-Not compatible with mapgen v6 & singlenode!!
-
 The road partially follows the terrain and tunnels through higher ground otherwise.
 The road materials depend on the environment. 
 Small amounts of loot can be found in little buildings beside the road.
 Per default the road will be generated at around x = 100.
+
+Check the advanced configuration-section of Minetest to change the configurable parameters.
+
+Compatibility with Mapgens:
+generally works with all mapgens which provide a heightmap via minetest.get_mapgen_object
+works better when a heatmap is provided as well.
+Fully compatible with : v5, v7, flat, fractal, valleys, lualandmg
+Compatible with slightly different behaviour with: v6
+Not compatible with singlenode unless you provide at least a heightmap in the corresponding lua-mapgenerator, 
+see https://github.com/SmallJoker/lualandmg/blob/b72ef91/init.lua#L97-L109 for an example on how to provide heightmap and heatmap properly.
