@@ -17,4 +17,10 @@ thelowerroad.sinspread (The spread of the road wobble) int 30 2 40
 # affects the rareness of house generation
 # setting this to 0 will create houses one the ground
 # larger values create houses only if the road is underground
-thelowerroad.house_rareness (Roadside-house rareness) int 5 0 11
+thelowerroad.house_rareness (Roadside-house rareness) int 0 0 11
+
+# if the trees are getting cleared out if the road is underground
+# if set to 1, all trees above the road will be removed
+# even if the road is currently underground
+# if set to 0, trees are only cleared if neccesary
+thelowerroad.excessive_clearing (Excessive tree-clearing) int 0 0 1

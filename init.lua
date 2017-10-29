@@ -25,6 +25,14 @@ local sinspread = tonumber(minetest.setting_get("thelowerroad.sinspread")) or 30
 -- larger values create houses only if the road is underground 
 -- default: 5
 local house_rareness = tonumber(minetest.setting_get("thelowerroad.house_rareness")) or 5
+-- if the trees are getting cleared out if the road is underground
+-- if set to 1, all trees above the road will be removed
+-- even if the road is currently underground
+-- if set to 0, trees are only cleared if neccesary
+local excessive_clearing = tonumber(minetest.setting_get("thelowerroad.excessive_clearing")) or 0
+
+-- testing
+print(dump(excessive_clearing))
 
 -- the material the road is build of
 --- main material
@@ -66,6 +74,36 @@ local rbwt1 = { name = "default:tree", param2 = 9, force_place = true, prob = 25
 
 -- ---- Don't edit below here (unless you know what you are doing) ----
 -- ----------------------------------------------------------------------------
+-- node roadbuilders trophy - not craftable
+-- a rare loot-object - rarely found in roadside buidlings
+minetest.register_node("thelowerroad:collectible_roadbuilder_trophy", {
+	description = "The Lower Road - Roadbuilders Trophy - Collectible",
+	is_ground_content = false,
+	sunlight_propagates = true,
+    groups = {cracky = 3, oddly_breakable_by_hand = 3, dig_immediate = 3},
+	paramtype = "light",
+	paramtype2 = "facedir",
+	light_source = 3,
+	tiles = {
+		"default_stone.png"
+	},
+	drawtype = "nodebox",	
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.4375, -0.5, -0.4375, 0.4375, -0.4375, 0.4375}, -- NodeBox1
+			{-0.375, -0.4375, -0.375, 0.375, -0.375, 0.375}, -- NodeBox2
+			{-0.3125, -0.375, -0.3125, 0.3125, -0.25, 0.3125}, -- NodeBox3
+			{-0.0625, -0.25, -0.125, 0.0625, 0.5, 0}, -- NodeBox4
+			{-0.1875, 0.25, -0.125, 0.1875, 0.375, 0}, -- NodeBox5
+			{0.1875, 0.125, -0.125, 0.3125, 0.25, 0}, -- NodeBox6
+			{-0.3125, 0.125, -0.125, -0.1875, 0.25, 0}, -- NodeBox7
+			{-0.375, -0.125, 0, 0.375, 0, 0.125}, -- NodeBox8
+			{0.125, -0.1875, 0, 0.3125, 0.0625, 0.125}, -- NodeBox9
+		}
+	}
+})
+
 -- air that replaces other blocks, for tunneling
 local ab1 = { name = "air", force_place = true, prob = 255 }
 -- air that replaces nothing, used as "filler" to make non-cubic volumes
@@ -602,7 +640,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	-- related to house placement
 	local hashouse = 0 
 	local isstairs = 0
-	local housex, housey, housez
+	local housex, housey, housez, schem_house
 	-- repeat for ever z-value stating with the lowest
 	for z = minp.z, maxp.z do
 		match_i = false
@@ -740,7 +778,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		-- get heat at current pos
 		hm_i = (x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
 		local lheat = heatmap[hm_i]
-		local schem_main, schem_stair_neg, schem_stair_pos, schem_tunnel, schem_road_deco, schem_house
+		local schem_main, schem_stair_neg, schem_stair_pos, schem_tunnel, schem_road_deco
 		-- assign matrials depending on temperature
 		if (lheat < 20 ) then
 			schem_main = t1road_main
@@ -789,11 +827,15 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		
 		
 		-- Replace trees/plants and snow with air
-		clearlist = minetest.find_nodes_in_area({x = (x - math.floor(road_width/2) - 1), y = (y + 1), z = z },
-		{x = (x + math.floor(road_width/2) + 1) , y = maxp.y, z = z },
-		{"group:tree", "group:leafdecay", "group:plant", "group:flora", "default:snow"})
-		for _ , clnode in pairs(clearlist) do
-			minetest.place_schematic_on_vmanip(voxman_o, clnode, air_schem, 0, nil, true)
+		-- if road is not below surface or excessive_clearing is turned on
+		if ( ((y - hmap[hm_i]) > -8) or (excessive_clearing == 1) ) then
+			clearlist = minetest.find_nodes_in_area({x = (x - math.floor(road_width/2) - 1), y = (y + 1), z = z },
+			{x = (x + math.floor(road_width/2) + 1) , y = maxp.y, z = z },
+			{"group:tree", "group:leaves", "group:leafdecay", "group:leafdecay_drop", "group:plant", "group:flora", 
+			 "group:sapling", "default:snow", "default:snowblock", "default:cactus"})
+			for _ , clnode in pairs(clearlist) do
+				minetest.place_schematic_on_vmanip(voxman_o, clnode, air_schem, 0, nil, true)
+			end
 		end
 
 		-- place stairs if road is uneven
@@ -844,6 +886,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	voxman_o:write_to_map()
 	-- check for house and update/fill chest
 	if (hashouse == 1) then
+		minetest.place_schematic({ x = housex , y = housey , z = housez }, schem_house, 0, nil, true)
 		minetest.set_node({x = (housex + 4), y = ( housey + 1), z = (housez + 2)}, rbchest)
 		local chestinv = minetest.get_inventory({type="node", pos={x = (housex + 4), y = ( housey + 1), z = (housez + 2)}})
 		-- put in some loot
@@ -863,6 +906,12 @@ minetest.register_on_generated(function(minp, maxp, seed)
 		chestinv:add_item("main", stack)
 		stack = ItemStack("default:sword_stone " .. math.random(0, 1))
 		chestinv:add_item("main", stack)
+		if (math.random(0,50) == 1) then
+			stack = ItemStack("thelowerroad:collectible_roadbuilder_trophy 1")
+			chestinv:add_item("main", stack)
+			print(os.date() .. " : [theloweroad]: collectible placed at: x:" .. (housex + 4) .. " y:" .. (housey + 1) .. " z:" .. (housez + 2) )
+		end
+		
 	end
 end	
 )
