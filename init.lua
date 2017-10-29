@@ -31,9 +31,6 @@ local house_rareness = tonumber(minetest.setting_get("thelowerroad.house_rarenes
 -- if set to 0, trees are only cleared if neccesary
 local excessive_clearing = tonumber(minetest.setting_get("thelowerroad.excessive_clearing")) or 0
 
--- testing
-print(dump(excessive_clearing))
-
 -- the material the road is build of
 --- main material
 local t1rb1 = { name = "default:silver_sandstone_brick", force_place = true, prob = 255 }
