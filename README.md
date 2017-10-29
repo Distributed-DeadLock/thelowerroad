@@ -14,7 +14,7 @@ Small amounts of loot can be found in little buildings beside the road.
 Per default the road will be generated at around x = 100.
 
 
-Version: 1.1
+Version: 1.2
 
 License: The MIT License (MIT)
 
