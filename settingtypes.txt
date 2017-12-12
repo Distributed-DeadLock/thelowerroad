@@ -6,7 +6,7 @@ thelowerroad.axisx (X Position of the road) int 100
 # defining the road wobble
 # the factor x-pos is divided by, before taking the sinus
 # values larger than the chunksize will stretch out the wobble
-# values smaller than chunksize produce varying results depending on the resonance with chunksize 
+# values smaller than chunksize produce varying results depending on the resonance with chunksize
 thelowerroad.sinfactor (The road wobble) int 62 40 10000
 
 # the result of sin(x-pos / sinfactor) is multiplied by this

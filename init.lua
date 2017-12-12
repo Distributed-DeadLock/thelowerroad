@@ -24,7 +24,7 @@ local sinspread = tonumber(minetest.setting_get("thelowerroad.sinspread")) or 30
 -- setting this to 0 will create houses one the ground
 -- larger values create houses only if the road is underground 
 -- default: 5
-local house_rareness = tonumber(minetest.setting_get("thelowerroad.house_rareness")) or 5
+local house_rareness = tonumber(minetest.setting_get("thelowerroad.house_rareness")) or 0
 -- if the trees are getting cleared out if the road is underground
 -- if set to 1, all trees above the road will be removed
 -- even if the road is currently underground
