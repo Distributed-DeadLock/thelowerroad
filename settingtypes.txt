@@ -24,3 +24,7 @@ thelowerroad.house_rareness (Roadside-house rareness) int 0 0 11
 # even if the road is currently underground
 # if set to 0, trees are only cleared if neccesary
 thelowerroad.excessive_clearing (Excessive tree-clearing) int 0 0 1
+
+# road base elevation
+# in blocks above sea-level
+thelowerroad.roadelevation (road base elevation above sealevel) int 0 0 20

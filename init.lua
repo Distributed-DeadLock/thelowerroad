@@ -30,6 +30,9 @@ local house_rareness = tonumber(minetest.setting_get("thelowerroad.house_rarenes
 -- even if the road is currently underground
 -- if set to 0, trees are only cleared if neccesary
 local excessive_clearing = tonumber(minetest.setting_get("thelowerroad.excessive_clearing")) or 0
+-- road base elevation
+-- in blocks above sea-level
+local elevation_offset = (minetest.setting_get("thelowerroad.roadelevation")) or 0
 
 -- the material the road is build of
 --- main material
@@ -111,7 +114,8 @@ local chunksizeinnodes = minetest.setting_get("chunksize") * 16
 -- set the base-level of the road (y-wise)
 -- road will not go below this AND be only generated in the chunk containing this y-position
 -- best be left at water_level
-local road_base_elevation = minetest.setting_get("water_level") + 0
+local road_base_elevation = minetest.setting_get("water_level") + elevation_offset
+local waterlevel = minetest.setting_get("water_level")
 -- the width of the road
 local road_width = 5
 -- the height of the road
@@ -663,8 +667,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			test_x = prev_x
 			-- get height at current test position
 			hm_i = (test_x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
-			-- don't go lower than road_base_elevation
-			test_y = math.max(hmap[hm_i], road_base_elevation)
+			-- don't go lower than waterlevel
+			test_y = math.max(hmap[hm_i], waterlevel)
 				
 			-- if straight foreward is a x-pos that can reach endx and 
 			--  can reach road_base_elevation and
@@ -683,8 +687,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			test_x = prev_x + pref_dir_x
 			-- get height at current test position
 			hm_i = (test_x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
-			-- don't go lower than road_base_elevation
-			test_y = math.max(hmap[hm_i], road_base_elevation)
+			-- don't go lower than waterlevel
+			test_y = math.max(hmap[hm_i], waterlevel)
 			-- test again for x-pos one node "outward"
 			if (math.abs(test_x - endx) < (slices_left / road_width)) and
 				(math.abs(test_y - road_base_elevation) < slices_left) and
@@ -699,8 +703,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			test_x = prev_x - pref_dir_x
 			-- get height at current test position
 			hm_i = (test_x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
-			-- don't go lower than road_base_elevation
-			test_y = math.max(hmap[hm_i], road_base_elevation)
+			-- don't go lower than waterlevel
+			test_y = math.max(hmap[hm_i], waterlevel)
 			-- test again for x-pos one node "inward"
 			if (math.abs(test_x - endx) < (slices_left / road_width)) and
 				(math.abs(test_y - road_base_elevation) < slices_left) and
@@ -718,26 +722,25 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				if match_s and (d_s < d_o) and (d_s < d_i) then
 					x = prev_x
 					hm_i = (x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
-					y = math.max(hmap[hm_i], road_base_elevation)
+					y = math.max(hmap[hm_i], waterlevel)
 				end
 				
 				-- if "outwards" is closest to ideal sin-line
 				if match_o and (d_o < d_s) and (d_o < d_i) then
 					x = prev_x + pref_dir_x
 					hm_i = (x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
-					y = math.max(hmap[hm_i], road_base_elevation)
+					y = math.max(hmap[hm_i], waterlevel)
 				end
 				
 					-- if "inwards" is closest to ideal sin-line
 				if match_i and (d_i < d_s) and (d_i < d_s) then
 					x = prev_x - pref_dir_x
 					hm_i = (x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
-					y = math.max(hmap[hm_i], road_base_elevation)
+					y = math.max(hmap[hm_i], waterlevel)
 				end
 				rtype = 1
 			else
 			-- no valid pos on surface found, tunneling/bridging instead
-			
 				-- set x-pos as close as possible to ideal sin-line
 				if ( prev_x == (centerx + math.floor(sinspread * math.sin(z/sinfactor))) ) then	
 					x = prev_x
@@ -750,8 +753,9 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				-- set y-pos
 				-- if road is above ground, lower it
 				hm_i = (x - minp.x + 1) + (((z - minp.z)) * chunksizeinnodes)
-				if (prev_y > hmap[hm_i]) or 
-				( minetest.get_node({x=x,y=prev_y,z=z}).name == "air" ) then 
+				if (((prev_y > hmap[hm_i]) or 
+				( minetest.get_node({x=x,y=prev_y,z=z}).name == "air" )) and
+				 (math.abs(prev_y - road_base_elevation) < (slices_left + 1))) then 
 					y = prev_y - 1
 				else 
 				
@@ -765,8 +769,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 						y = prev_y + 1
 					end
 				end
-				-- make shure y is not below road base elevation
-				y = math.max(y, road_base_elevation)	
+				-- make shure y is not below waterlevel
+				y = math.max(y, waterlevel)	
 				rtype = 2
 			end
 			
