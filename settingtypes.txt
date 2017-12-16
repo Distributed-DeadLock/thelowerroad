@@ -12,7 +12,7 @@ thelowerroad.sinfactor (The road wobble) int 62 40 10000
 # the result of sin(x-pos / sinfactor) is multiplied by this
 # the bigger the value, the bigger the wobble
 # values bigger than (chunksize/2)-roadwith will break the mod. 20 is a safe value
-thelowerroad.sinspread (The spread of the road wobble) int 30 2 40
+thelowerroad.sinspread (The spread of the road wobble) int 30 2 37
 
 # affects the rareness of house generation
 # setting this to 0 will create houses one the ground
