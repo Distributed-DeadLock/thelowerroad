@@ -44,6 +44,3 @@ The road is generated during world-generation, so
 activating it on already existing worlds might not generate one.
 
 Check the advanced configuration-section of Minetest to change the configurable parameters.
-
-For further information or help see:
-http://wiki.minetest.com/wiki/Installing_Mods
